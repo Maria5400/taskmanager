@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-task-manager-deployment
+  labels:
+    app: student-task-manager
+spec:
+  replicas: 1  # Requirement fulfilled: at least 1 replica
+  selector:
+    matchLabels:
+      app: student-task-manager
+  template:
+    metadata:
+      labels:
+        app: student-task-manager
+    spec:
+      containers:
+        - name: taskmanager-container
+          image: student-task-manager:latest  # Your built Docker image
+          imagePullPolicy: IfNotPresent        # Tells K8s to use your local image instead of pulling from the internet
+          ports:
+            - containerPort: 8080               # Requirement fulfilled: port 8080
