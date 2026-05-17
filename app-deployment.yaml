@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-task-manager-deployment
+  labels:
+    app: student-task-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: student-task-manager
+  template:
+    metadata:
+      labels:
+        app: student-task-manager
+    spec:
+      containers:
+        - name: taskmanager-container
+          image: student-task-manager:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            # Pass data source configurations into Spring Boot environment variables
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: db-url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db-username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db-password
